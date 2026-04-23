@@ -1,0 +1,947 @@
+
+<style>
+:root{--bg:#050810;--bg2:#0a0f1e;--bg3:#0f1628;--accent:#00e5ff;--a2:#7c3aed;--a3:#10b981;--warn:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--muted:#64748b;--border:rgba(0,229,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 48px}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+h1{font-size:clamp(20px,3.5vw,32px);font-weight:800;letter-spacing:-1px;text-align:center}
+h1 span{color:var(--accent)}
+.subtitle{text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.badge{display:inline-block;background:rgba(0,229,255,.08);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:2px}
+header{text-align:center;margin-bottom:28px}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px}
+.logo-icon{width:44px;height:44px;border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);animation:pulse 3s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{box-shadow:0 0 16px rgba(0,229,255,.3)}50%{box-shadow:0 0 32px rgba(0,229,255,.6)}}
+.tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:20px}
+.tab{flex:1;padding:9px 8px;background:transparent;border:none;border-radius:8px;color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.tab.active{background:var(--bg3);color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.sec{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:540px){.grid2{grid-template-columns:1fr}}
+.field{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:5px}
+.field label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;padding:7px 10px;outline:none;width:100%;transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field select option{background:var(--bg3)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.upload-zone{background:var(--bg2);border:2px dashed rgba(0,229,255,.2);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .3s;position:relative;margin-bottom:14px}
+.upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:rgba(0,229,255,.04)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:36px;margin-bottom:10px}
+.upload-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.upload-sub{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.pills{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pill{font-family:'Space Mono',monospace;font-size:9px;padding:3px 10px;border-radius:20px;background:rgba(0,229,255,.08);border:1px solid var(--border);color:var(--accent)}
+.file-card{background:var(--bg3);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.file-card .fi{font-size:26px;flex-shrink:0}
+.file-card .fd{flex:1}
+.file-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.file-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+.fstats{display:flex;gap:14px;margin-top:5px;flex-wrap:wrap}
+.fstat{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+.fstat span{color:var(--accent);font-size:13px;font-weight:700}
+.rm-btn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:7px 12px;color:var(--danger);font-size:11px;cursor:pointer;white-space:nowrap}
+.prog-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;text-align:center}
+.prog-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:8px;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.prog-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--a2),var(--accent));border-radius:3px;transition:width .4s}
+.preview-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;max-height:140px;overflow-y:auto;font-family:'Space Mono',monospace;font-size:10px;line-height:1.7;color:var(--muted);white-space:pre-wrap;margin-bottom:14px}
+.analyze-btn{width:100%;padding:15px;background:rgba(0,229,255,.06);border:2px solid var(--accent);border-radius:12px;color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden}
+.analyze-btn::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s;z-index:0}
+.analyze-btn:hover:not(:disabled){color:var(--bg)}
+.analyze-btn:hover:not(:disabled)::before{transform:scaleX(1)}
+.analyze-btn span{position:relative;z-index:1}
+.analyze-btn:disabled{opacity:.4;cursor:not-allowed}
+.results{animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.score-hero{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px 20px;margin-bottom:16px;text-align:center}
+.gauge-svg{width:220px;height:126px}
+.big-score{font-size:52px;font-weight:800;font-family:'Space Mono',monospace;line-height:1;transition:color .5s}
+.chci-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.verdict-badge{display:inline-block;font-size:13px;font-weight:700;margin-top:10px;padding:8px 18px;border-radius:8px;letter-spacing:1px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat .sl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.stat .sv{font-family:'Space Mono',monospace;font-size:18px;font-weight:700}
+.seg-item{background:var(--bg3);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.seg-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:80px}
+.seg-bar-wrap{flex:1;height:6px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.seg-bar{height:100%;border-radius:4px;transition:width 1s ease}
+.seg-score{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;min-width:40px;text-align:right}
+.seg-v{font-size:9px;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:16px}
+.dim{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.dim .dl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.dim .dv2{font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:5px}
+.dim .db{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:5px;overflow:hidden}
+.dim .dbf{height:100%;border-radius:2px}
+.dim .dv{font-family:'Space Mono',monospace;font-size:18px;font-weight:700}
+.mrow{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+.mtag{font-size:10px;padding:3px 8px;border-radius:5px}
+.decl-card{background:var(--bg2);border:1px solid rgba(16,185,129,.3);border-radius:14px;padding:20px;margin-bottom:16px}
+.decl-card h3{font-size:10px;font-weight:700;color:var(--a3);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.decl-row{display:flex;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);align-items:flex-start}
+.decl-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.decl-key{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:rgba(0,229,255,.08);padding:3px 8px;border-radius:5px;white-space:nowrap;min-width:50px;text-align:center}
+.decl-text{font-size:11px;line-height:1.7}
+.exp-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.exp-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.exp-btn.g{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.4);color:var(--a3)}
+.exp-btn.g:hover{background:rgba(16,185,129,.2)}
+.exp-btn.b{background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.3);color:var(--accent)}
+.exp-btn.b:hover{background:rgba(0,229,255,.14)}
+.narr{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.narr h3{font-size:10px;font-weight:700;color:var(--warn);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.narr-text{font-size:12px;line-height:1.9}
+.radar-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.rleg{flex:1;min-width:160px}
+.rleg-item{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.rleg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rleg-lbl{font-size:11px;flex:1}
+.rleg-val{font-family:'Space Mono',monospace;font-size:11px;font-weight:700}
+.error-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--danger);line-height:1.6}
+.info-box{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--accent);line-height:1.7}
+.inputs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:18px}
+.ic{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;transition:border-color .2s}
+.ic:hover{border-color:rgba(0,229,255,.3)}
+.ic .ilab{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ic .iname{font-size:12px;font-weight:600}
+.ic .ivar{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:rgba(0,229,255,.08);padding:2px 6px;border-radius:4px}
+.ic .idesc{font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.srow{display:flex;align-items:center;gap:8px}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--bg3);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer}
+.sval{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);min-width:34px;text-align:right}
+.mem-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:480px){.mem-grid{grid-template-columns:1fr}}
+.mem{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.mem h3{font-size:12px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.tag{font-family:'Space Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(124,58,237,.2);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.tag.g{background:rgba(16,185,129,.15);color:#34d399;border-color:rgba(16,185,129,.3)}
+.mem .mdesc{font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.compute-btn{width:100%;padding:14px;background:transparent;border:2px solid var(--accent);border-radius:12px;color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:20px;position:relative;overflow:hidden}
+.compute-btn::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s;z-index:-1}
+.compute-btn:hover{color:var(--bg)}
+.compute-btn:hover::before{transform:scaleX(1)}
+.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hist-score{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;min-width:52px;text-align:center}
+.hist-info{flex:1}
+.hist-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.hist-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+.hist-v{font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.no-hist{text-align:center;padding:36px;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px}
+.footer{text-align:center;margin-top:32px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);line-height:2}
+.paste-mode{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.3);border-radius:14px;padding:20px;margin-bottom:16px}
+.paste-mode h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:10px}
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<div class="wrap">
+<header>
+  <div class="logo-row">
+    <div class="logo-icon">AG<br>999</div>
+    <div>
+      <h1><span>CHCI</span> Authorship Engine</h1>
+      <p class="subtitle">Creative Human Control Index · AG-999 Formula 06_A</p>
+      <div class="badge">v3.1 · CHAT-POWERED ANALYSIS</div>
+    </div>
+  </div>
+</header>
+
+
+<div class="tabs" id="tabs">
+  <button class="tab active" onclick="switchTab('upload')">📚 Upload do Livro</button>
+  <button class="tab" onclick="switchTab('manual')">⊞ Manual</button>
+  <button class="tab" onclick="switchTab('json')">⟳ Colar Resultado</button>
+  <button class="tab" onclick="switchTab('history')">⊙ Histórico</button>
+</div>
+
+<!-- UPLOAD TAB -->
+<div id="tab-upload">
+  <div class="info-box">
+    <strong>◈ Pipeline Automático:</strong><br>
+    1. Preencha os dados da obra e faça upload do arquivo<br>
+    2. Clique em <strong>"Analisar com Claude"</strong> — a IA processa diretamente<br>
+    3. O dashboard completo é gerado automaticamente em segundos
+  </div>
+
+  <div class="sec">Dados da Obra</div>
+  <div class="grid2">
+    <div class="field"><label>Título da Obra</label><input type="text" id="work-title" placeholder="Ex: Memórias do Abismo"></div>
+    <div class="field"><label>Autor(es)</label><input type="text" id="work-author" placeholder="Nome do autor"></div>
+    <div class="field"><label>Tipo</label><select id="work-type"><option>Romance</option><option>Poesia</option><option>Ensaio</option><option>Conto</option><option>Não-ficção</option><option>Outro</option></select></div>
+    <div class="field"><label>Contexto de Criação</label><select id="work-context"><option value="unknown">Não informado</option><option value="human_first">Rascunho humano + IA auxiliou</option><option value="ai_first">IA gerou + humano editou intensamente</option><option value="collaborative">Colaboração iterativa humano-IA</option><option value="no_ai">Sem uso declarado de IA</option></select></div>
+    <div class="field"><label>ISBN / Registro</label><input type="text" id="work-isbn" placeholder="9798241542984"></div>
+    <div class="field"><label>Responsabilidade Autoral (ρ)</label><select id="work-rho"><option value="1.0">Total — plena responsabilidade</option><option value="0.8">Alta — com ressalvas</option><option value="0.5">Parcial — coautoria com IA</option><option value="0.2">Baixa — IA foi principal criadora</option></select></div>
+  </div>
+
+  <div class="sec">Upload do Livro</div>
+  <div class="upload-zone" id="upload-zone"
+    ondragover="event.preventDefault();this.classList.add('over')"
+    ondragleave="this.classList.remove('over')"
+    ondrop="event.preventDefault();this.classList.remove('over');handleDrop(event)">
+    <input type="file" id="file-input" accept=".pdf,.txt,.md,.docx,.epub" onchange="handleFile(event)">
+    <div class="upload-icon">📖</div>
+    <div class="upload-title">Arraste o livro aqui ou clique para selecionar</div>
+    <div class="upload-sub">O texto será enviado ao Claude no chat para análise CHCI.</div>
+    <div class="pills"><span class="pill">PDF</span><span class="pill">TXT</span><span class="pill">DOCX</span><span class="pill">MD</span><span class="pill">EPUB</span></div>
+  </div>
+
+  <div class="file-card" id="file-card" style="display:none">
+    <div class="fi" id="fi-icon">📄</div>
+    <div class="fd">
+      <div class="file-name" id="fi-name">—</div>
+      <div class="file-meta" id="fi-meta">—</div>
+      <div class="fstats" id="fi-stats"></div>
+    </div>
+    <button class="rm-btn" onclick="removeFile()">✕ Remover</button>
+  </div>
+
+  <div class="prog-wrap" id="prog-wrap" style="display:none">
+    <div class="prog-label" id="prog-label">◈ EXTRAINDO TEXTO...</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="preview-wrap" style="display:none;margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Pré-visualização</div>
+      <button onclick="togglePreview()" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer" id="prev-btn">Mostrar</button>
+    </div>
+    <div class="preview-box" id="preview-box" style="display:none"></div>
+  </div>
+
+  <div class="error-box" id="error-box" style="display:none"></div>
+
+  <button class="analyze-btn" id="analyze-btn" onclick="requestAnalysis()" disabled>
+    <span id="analyze-label">◈ &nbsp; ANALISAR COM CLAUDE &nbsp; ◈</span>
+  </button>
+
+  <!-- INLINE RESULTS — aparecem aqui mesmo após análise -->
+  <div id="upload-results" style="display:none" class="results"></div>
+</div>
+
+<!-- MANUAL TAB -->
+<div id="tab-manual" style="display:none">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent)">
+    CHCI = σ(a·[exp(−λ·D²<sub>t</sub>)−b]) &nbsp;|&nbsp; D² = Σw·dim² + β·z + γ·φ + δ·σ
+  </div>
+  <div class="sec">Dimensões de Autoria</div>
+  <div class="inputs-grid">
+    <div class="ic"><div class="ilab"><span class="iname">Edit Intensity</span><span class="ivar">E'</span></div><p class="idesc">Profundidade e frequência de edições humanas no output da IA.</p><div class="srow"><input type="range" id="E" min="0" max="100" value="70" oninput="sv('E')"><span class="sval" id="Ev">0.70</span></div></div>
+    <div class="ic"><div class="ilab"><span class="iname">Divergência Semântica</span><span class="ivar">S'</span></div><p class="idesc">Quanto as escolhas humanas desviaram das sugestões da IA.</p><div class="srow"><input type="range" id="S" min="0" max="100" value="65" oninput="sv('S')"><span class="sval" id="Sv">0.65</span></div></div>
+    <div class="ic"><div class="ilab"><span class="iname">Taxa de Rejeição</span><span class="ivar">R'</span></div><p class="idesc">Proporção de variações da IA rejeitadas ou substituídas pelo humano.</p><div class="srow"><input type="range" id="R" min="0" max="100" value="55" oninput="sv('R')"><span class="sval" id="Rv">0.55</span></div></div>
+    <div class="ic"><div class="ilab"><span class="iname">Consistência Temporal</span><span class="ivar">T'</span></div><p class="idesc">Regularidade das intervenções humanas ao longo das sessões.</p><div class="srow"><input type="range" id="T" min="0" max="100" value="80" oninput="sv('T')"><span class="sval" id="Tv">0.80</span></div></div>
+    <div class="ic"><div class="ilab"><span class="iname">Profundidade de Intenção</span><span class="ivar">z_t</span></div><p class="idesc">Profundidade qualitativa da direção conceitual da obra.</p><div class="srow"><input type="range" id="Z" min="0" max="100" value="85" oninput="sv('Z')"><span class="sval" id="Zv">0.85</span></div></div>
+    <div class="ic"><div class="ilab"><span class="iname">Responsabilidade Autoral</span><span class="ivar">ρ</span></div><p class="idesc">Declaração explícita de responsabilidade — legal, moral, cultural.</p><div class="srow"><input type="range" id="RHO" min="0" max="100" value="90" oninput="sv('RHO')"><span class="sval" id="RHOv">0.90</span></div></div>
+  </div>
+  <div class="sec">Campos de Memória</div>
+  <div class="mem-grid">
+    <div class="mem"><h3>φ-field <span class="tag g">Curto prazo</span></h3><p class="mdesc">Densidade de intervenção nas últimas 6 sessões — camada HAIL.</p><div class="srow"><input type="range" id="PHI" min="0" max="100" value="72" oninput="sv('PHI')"><span class="srow"><input type="range" id="PHI" min="0" max="100" value="72" oninput="sv('PHI')" style="display:none"><span class="sval" id="PHIv">0.72</span></div></div>
+    <div class="mem"><h3>σ-field <span class="tag">Longo prazo</span></h3><p class="mdesc">Padrão autoral acumulado em 24 sessões — camada CIR.</p><div class="srow"><input type="range" id="SIGMA" min="0" max="100" value="68" oninput="sv('SIGMA')"><span class="sval" id="SIGMAv">0.68</span></div></div>
+  </div>
+  <button class="compute-btn" onclick="computeManual()">⟶ &nbsp; COMPUTAR SCORE CHCI &nbsp; ⟵</button>
+  <div id="manual-result"></div>
+</div>
+
+<!-- JSON PASTE TAB -->
+<div id="tab-json" style="display:none">
+  <div class="paste-mode">
+    <h4>◈ Cole aqui o JSON retornado pelo Claude no chat</h4>
+    <div class="field" style="margin-bottom:12px">
+      <label>JSON da Análise</label>
+      <textarea id="json-input" placeholder='{"E_prime":0.82,"S_prime":0.79,...}' style="min-height:120px;font-family:monospace;font-size:11px"></textarea>
+    </div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="field"><label>Título</label><input type="text" id="j-title" placeholder="Título da obra"></div>
+      <div class="field"><label>Autor</label><input type="text" id="j-author" placeholder="Nome do autor"></div>
+      <div class="field"><label>Tipo</label><select id="j-type"><option>Romance</option><option>Poesia</option><option>Ensaio</option><option>Conto</option><option>Não-ficção</option><option>Outro</option></select></div>
+      <div class="field"><label>ISBN</label><input type="text" id="j-isbn" placeholder="—"></div>
+      <div class="field"><label>Total de Palavras</label><input type="number" id="j-words" placeholder="30817"></div>
+      <div class="field"><label>Responsabilidade (ρ)</label><select id="j-rho"><option value="1.0">Total</option><option value="0.8">Alta</option><option value="0.5">Parcial</option><option value="0.2">Baixa</option></select></div>
+    </div>
+    <button class="compute-btn" onclick="loadFromJSON()">⟶ &nbsp; CARREGAR RESULTADO &nbsp; ⟵</button>
+    <div class="error-box" id="json-error" style="display:none"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="json-results" style="display:none" class="results">
+    <div class="score-hero">
+      <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px">◈ CHCI — Creative Human Control Index</div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <svg class="gauge-svg" viewBox="0 0 240 138" id="gauge-svg2">
+          <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="#1e293b" stroke-width="16" stroke-linecap="round"/>
+          <path id="gauge-fill2" d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="#00e5ff" stroke-width="16" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"/>
+          <circle cx="120" cy="120" r="6" fill="#00e5ff"/>
+          <line id="gauge-needle2" x1="120" y1="120" x2="120" y2="28" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" transform="rotate(-90 120 120)"/>
+        </svg>
+        <div class="big-score" id="big-score2">0.00</div>
+        <div class="chci-label">Creative Human Control Index</div>
+        <div class="verdict-badge" id="verdict-badge2">—</div>
+      </div>
+    </div>
+    <div class="stats-row" id="stats-row2"></div>
+    <div class="radar-section" id="radar-section2"><svg id="radar-svg2" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" style="max-width:220px;flex-shrink:0"></svg><div class="rleg" id="rleg2"></div></div>
+    <div class="card"><div class="sec">Análise por Segmento</div><div id="seg-list2"></div></div>
+    <div class="dim-grid" id="dim-grid2"></div>
+    <div class="narr"><h3>◈ Análise Qualitativa da IA</h3><div class="narr-text" id="narr-text2"></div></div>
+    <div class="decl-card">
+      <h3>◈ Declaração ELHC — Auto-Gerada</h3>
+      <div class="decl-row"><div class="decl-key">OBRA</div><div class="decl-text" id="d-obra2">—</div></div>
+      <div class="decl-row"><div class="decl-key">CIR</div><div class="decl-text" id="d-cir2">—</div></div>
+      <div class="decl-row"><div class="decl-key">HAIL</div><div class="decl-text" id="d-hail2">—</div></div>
+      <div class="decl-row"><div class="decl-key">CHCI</div><div class="decl-text" id="d-chci2">—</div></div>
+    </div>
+    <div class="exp-row">
+      <button class="exp-btn g" onclick="exportTXT()">↓ Declaração ELHC (.txt)</button>
+      <button class="exp-btn g" onclick="exportJSON()">↓ Dados Completos (.json)</button>
+      <button class="exp-btn b" onclick="saveHistory()">⊙ Salvar no Histórico</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY TAB -->
+<div id="tab-history" style="display:none">
+  <div class="sec">Histórico de Avaliações</div>
+  <div id="hist-list"><div class="no-hist">Nenhuma avaliação registrada ainda.</div></div>
+</div>
+
+<div class="footer">AG-999 Formula 06_A · Proprietary Engine · César Agliardi Pereira<br>ELHC Framework · ISBN 9798241542984 · Lei 9.610/98 · © 2025–2026 · v3.1</div>
+</div>
+
+<script>
+if(typeof pdfjsLib!=='undefined') pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ▼ Cole aqui a URL do seu Cloudflare Worker após o deploy
+const WORKER_URL = 'https://SEU-WORKER.SEU-USUARIO.workers.dev';
+
+let extractedText='', lastResult=null;
+let histData=[];
+try{histData=JSON.parse(localStorage.getItem('chci_v3')||'[]')}catch(e){}
+
+function switchTab(t){
+  ['upload','manual','json','history'].forEach(n=>{
+    document.getElementById('tab-'+n).style.display=n===t?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('active',['upload','manual','json','history'][i]===t);
+  });
+  if(t==='history') renderHistory();
+}
+
+function sv(id){
+  const el=document.getElementById(id);
+  const vEl=document.getElementById(id+'v');
+  if(el&&vEl) vEl.textContent=(el.value/100).toFixed(2);
+}
+['E','S','R','T','Z','RHO','PHI','SIGMA'].forEach(sv);
+
+function handleDrop(e){const f=e.dataTransfer.files[0];if(f)processFile(f)}
+function handleFile(e){if(e.target.files[0])processFile(e.target.files[0])}
+
+function showError(msg,id='error-box'){
+  const b=document.getElementById(id);
+  if(!b)return;
+  b.style.display=msg?'block':'none';
+  b.innerHTML=msg||'';
+}
+
+async function processFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['pdf','txt','md','docx','epub'].includes(ext)){
+    showError('Formato não suportado. Use: PDF, TXT, DOCX, MD ou EPUB.');return;
+  }
+  showError('');
+  setProg(true,'◈ LENDO ARQUIVO...',5);
+  try{
+    let text='';
+    if(ext==='pdf') text=await extractPDF(file);
+    else if(ext==='docx') text=await extractDOCX(file);
+    else text=await file.text();
+    setProg(true,'◈ PROCESSANDO...',95);
+    await wait(300);
+    extractedText=text.trim();
+    setProg(false);
+    showFileCard(file,extractedText);
+    showPreview(extractedText);
+    document.getElementById('analyze-btn').disabled=false;
+    if(!document.getElementById('work-title').value)
+      document.getElementById('work-title').value=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+    document.getElementById('j-title').value=document.getElementById('work-title').value;
+    document.getElementById('analyze-btn').disabled=false;
+  }catch(err){
+    setProg(false);
+    showError('❌ Erro ao extrair texto: '+err.message);
+  }
+}
+
+async function extractPDF(file){
+  if(typeof pdfjsLib==='undefined') throw new Error('PDF.js não carregou.');
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  const n=pdf.numPages; let text='';
+  for(let i=1;i<=n;i++){
+    setProg(true,`◈ EXTRAINDO PÁGINA ${i} DE ${n}...`,5+Math.round((i/n)*85));
+    const page=await pdf.getPage(i);
+    const c=await page.getTextContent();
+    text+=c.items.map(x=>x.str).join(' ')+'\n\n';
+  }
+  return text;
+}
+
+async function extractDOCX(file){
+  if(typeof mammoth==='undefined') throw new Error('mammoth.js não carregou.');
+  setProg(true,'◈ EXTRAINDO DOCX...',40);
+  const buf=await file.arrayBuffer();
+  const r=await mammoth.extractRawText({arrayBuffer:buf});
+  return r.value;
+}
+
+function setProg(show,label='',pct=0){
+  document.getElementById('prog-wrap').style.display=show?'block':'none';
+  if(label) document.getElementById('prog-label').textContent=label;
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function showFileCard(file,text){
+  const words=text.split(/\s+/).filter(w=>w).length;
+  const ext=file.name.split('.').pop().toLowerCase();
+  const icons={pdf:'📕',docx:'📘',txt:'📄',md:'📝',epub:'📗'};
+  document.getElementById('fi-icon').textContent=icons[ext]||'📄';
+  document.getElementById('fi-name').textContent=file.name;
+  document.getElementById('fi-meta').textContent=`${(file.size/1024).toFixed(1)} KB · ${ext.toUpperCase()} · ${new Date().toLocaleDateString('pt-BR')}`;
+  document.getElementById('fi-stats').innerHTML=`
+    <div class="fstat">Palavras<br><span>${words.toLocaleString('pt-BR')}</span></div>
+    <div class="fstat">Chars<br><span>${text.length.toLocaleString('pt-BR')}</span></div>
+    <div class="fstat">Parágrafos<br><span>${text.split(/\n\s*\n/).filter(p=>p.trim()).length}</span></div>
+  `;
+  document.getElementById('j-words').value=words;
+  document.getElementById('file-card').style.display='flex';
+  document.getElementById('upload-zone').style.display='none';
+}
+
+function showPreview(text){
+  document.getElementById('preview-box').textContent=text.substring(0,1500)+(text.length>1500?'\n\n[...]':'');
+  document.getElementById('preview-wrap').style.display='block';
+}
+
+function togglePreview(){
+  const b=document.getElementById('preview-box');
+  const show=b.style.display!=='block';
+  b.style.display=show?'block':'none';
+  document.getElementById('prev-btn').textContent=show?'Ocultar':'Mostrar';
+}
+
+function removeFile(){
+  extractedText='';
+  document.getElementById('file-card').style.display='none';
+  document.getElementById('upload-zone').style.display='block';
+  document.getElementById('preview-wrap').style.display='none';
+  document.getElementById('analyze-btn').disabled=true;
+  document.getElementById('file-input').value='';
+  showError('');
+}
+
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function splitSegments(text,n=6){
+  const re=/\n\s*(cap[íi]tulo|chapter|parte|part|seção)\s*[\d\w]+/gi;
+  const by=text.split(re);
+  if(by.length>3){
+    const chunks=[];
+    for(let i=0;i<by.length;i+=2){
+      const c=by.slice(i,i+2).join(' ').trim();
+      if(c.length>200) chunks.push(c);
+    }
+    if(chunks.length>=2) return chunks.slice(0,8);
+  }
+  const size=Math.ceil(text.length/n);
+  return Array.from({length:n},(_,i)=>text.slice(i*size,(i+1)*size)).filter(s=>s.trim().length>100);
+}
+
+function computeCHCI(E,S,R,T,Z,rho,phi,sig){
+  const sigmoid=x=>1/(1+Math.exp(-x));
+  const sov=(E*.3+S*.25+R*.2+T*.1+Z*.1+rho*.05+phi*.15+sig*.10)/1.25;
+  const amplified=sigmoid((sov*2-1)*4);
+  const mem=(phi+sig)/2*.1;
+  let chci=Math.min(amplified+mem,1.0);
+  if(rho<0.3) chci*=(rho/0.3);
+  return chci;
+}
+
+async function requestAnalysis(){
+  if(!extractedText){showError('Faça upload primeiro.');return;}
+  const title=document.getElementById('work-title').value||'Sem título';
+  const author=document.getElementById('work-author').value||'Não informado';
+  const type=document.getElementById('work-type').value;
+  const context=document.getElementById('work-context').value;
+  const words=extractedText.split(/\s+/).filter(w=>w);
+  const totalWords=words.length;
+  const segs=splitSegments(extractedText,6);
+
+  const sample=[
+    words.slice(0,2500).join(' '),
+    words.slice(Math.floor(words.length/2)-1000,Math.floor(words.length/2)+1000).join(' '),
+    words.slice(-1500).join(' ')
+  ].join('\n\n--- [continuação] ---\n\n').substring(0,8000);
+
+  const prompt=`Analise esta obra para o CHCI Engine (AG-999 Formula 06_A / ELHC Framework) e retorne SOMENTE um JSON válido, sem markdown, sem texto extra:
+
+{"E_prime":0.XX,"S_prime":0.XX,"R_prime":0.XX,"T_prime":0.XX,"intent_depth":0.XX,"phi_field":0.XX,"sigma_field":0.XX,"hybrid_probability":0.XX,"human_confidence":0.XX,"verdict":"HUMAN|HYBRID|AI","human_markers":["m1","m2","m3","m4","m5"],"ai_markers":["m1","m2","m3"],"segment_scores":[0.XX,0.XX,0.XX,0.XX,0.XX,0.XX],"strengths":["s1","s2","s3"],"concerns":["c1","c2"],"narrative":"4-5 parágrafos de análise qualitativa detalhada sobre padrões de autoria, marcadores detectados e conclusão."}
+
+Critérios:
+- E_prime: irregularidades naturais, variações de ritmo, marcas de reescrita humana (0=IA, 1=humano)
+- S_prime: originalidade lexical, idiomatismos únicos, voz autoral particular
+- R_prime: mudanças de direção, deliberação visível, contradições resolvidas
+- T_prime: variação de energia entre segmentos, marcas de diferentes sessões
+- intent_depth: coerência temática global, propósito narrativo claro
+- phi_field: coesão local entre parágrafos próximos
+- sigma_field: arcos narrativos, evolução de ideias ao longo do texto
+- segment_scores: exatamente ${segs.length} valores, um por segmento
+- verdict: HUMAN se >70%, HYBRID se colaboração significativa, AI se predominantemente IA
+
+Obra: ${title} | Autor: ${author} | Tipo: ${type} | Contexto: ${context} | Palavras: ${totalWords.toLocaleString('pt-BR')} | Segmentos: ${segs.length}
+
+AMOSTRA (início + meio + fim):
+---
+${sample}
+---
+
+Retorne APENAS o JSON, sem mais nada.`;
+
+  const btn = document.getElementById('analyze-btn');
+  const label = document.getElementById('analyze-label');
+  btn.disabled = true;
+  label.textContent = '◈   CONECTANDO À IA...   ◈';
+  setProg(true, '◈ ENVIANDO PARA CLAUDE...', 10);
+
+  try {
+    setProg(true, '◈ CLAUDE ANALISANDO...', 40);
+
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${response.status}`);
+    }
+
+    setProg(true, '◈ PROCESSANDO RESPOSTA...', 80);
+    const data = await response.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try { parsed = JSON.parse(clean); }
+    catch (e) {
+      // Try to extract JSON from within the response
+      const m = clean.match(/\{[\s\S]*\}/);
+      if (m) parsed = JSON.parse(m[0]);
+      else throw new Error('Claude não retornou JSON válido: ' + raw.substring(0, 200));
+    }
+
+    setProg(false);
+    label.textContent = '◈   ANALISAR COM CLAUDE   ◈';
+    btn.disabled = false;
+
+    // Additional meta not declared above
+    const isbn = document.getElementById('work-isbn').value || '—';
+    const rhoVal = parseFloat(document.getElementById('work-rho').value);
+
+    // Auto-display results inline on upload tab
+    const segs = Array.from(
+      { length: (parsed.segment_scores || []).length || 6 },
+      (_, i) => `Segmento ${i + 1}`
+    );
+    const chci = computeCHCI(
+      parsed.E_prime || .5, parsed.S_prime || .5,
+      parsed.R_prime || .5, parsed.T_prime || .5,
+      parsed.intent_depth || .7, rhoVal,
+      parsed.phi_field || .6, parsed.sigma_field || .6
+    );
+    displayResultsInline(chci, parsed, segs,
+      { title, author, type, isbn, context, rhoVal, totalWords });
+
+  } catch (err) {
+    setProg(false);
+    label.textContent = '◈   ANALISAR COM CLAUDE   ◈';
+    btn.disabled = false;
+    showError('❌ Erro na análise: ' + err.message);
+  }
+}
+
+function loadFromJSON(){
+  showError('','json-error');
+  const raw=document.getElementById('json-input').value.trim();
+  if(!raw){showError('Cole o JSON da análise primeiro.','json-error');return;}
+  let parsed;
+  try{
+    const clean=raw.replace(/```json|```/g,'').trim();
+    parsed=JSON.parse(clean);
+  }catch(e){
+    showError('❌ JSON inválido: '+e.message+'<br>Certifique-se de copiar o JSON completo do chat.','json-error');
+    return;
+  }
+  const title=document.getElementById('j-title').value||'Sem título';
+  const author=document.getElementById('j-author').value||'—';
+  const type=document.getElementById('j-type').value;
+  const isbn=document.getElementById('j-isbn').value||'—';
+  const totalWords=parseInt(document.getElementById('j-words').value)||0;
+  const rhoVal=parseFloat(document.getElementById('j-rho').value);
+  const context='—';
+
+  const chci=computeCHCI(
+    parsed.E_prime||.5,parsed.S_prime||.5,parsed.R_prime||.5,parsed.T_prime||.5,
+    parsed.intent_depth||.7,rhoVal,parsed.phi_field||.6,parsed.sigma_field||.6
+  );
+
+  const segs=Array.from({length:(parsed.segment_scores||[]).length||6},(_,i)=>`Segmento ${i+1}`);
+  displayResults2(chci,parsed,segs,{title,author,type,isbn,context,rhoVal,totalWords});
+}
+
+function displayResults2(chci,data,segs,meta){
+  document.getElementById('json-results').style.display='block';
+  setTimeout(()=>document.getElementById('json-results').scrollIntoView({behavior:'smooth',block:'start'}),100);
+
+  const pct=(chci*100).toFixed(1);
+  let color,verdict,vbg;
+  if(chci>=.75){color='#10b981';verdict='✓ AUTORIA HUMANA VERIFICADA';vbg='rgba(16,185,129,.12)';}
+  else if(chci>=.5){color='#f59e0b';verdict='⚠ OBRA HÍBRIDA — CONTROLE PARCIAL';vbg='rgba(245,158,11,.12)';}
+  else if(chci>=.3){color='#ef4444';verdict='✕ CONTROLE HUMANO FRACO';vbg='rgba(239,68,68,.12)';}
+  else{color='#64748b';verdict='✕ PREDOMINANTEMENTE IA';vbg='rgba(100,116,139,.12)';}
+
+  animNum(document.getElementById('big-score2'),chci);
+  document.getElementById('big-score2').style.color=color;
+  const vb=document.getElementById('verdict-badge2');
+  vb.textContent=verdict;vb.style.color=color;vb.style.background=vbg;vb.style.border=`1px solid ${color}33`;
+  animGauge2(chci,color);
+
+  document.getElementById('stats-row2').innerHTML=[
+    {l:'CHCI Score',v:pct+'%',c:color},
+    {l:'Confiança Humana',v:((data.human_confidence||0)*100).toFixed(0)+'%',c:(data.human_confidence||0)>=.6?'#10b981':'#f59e0b'},
+    {l:'Prob. Híbrida',v:((data.hybrid_probability||0)*100).toFixed(0)+'%',c:'#f59e0b'},
+    {l:'Veredicto',v:data.verdict||'—',c:color},
+    {l:'Palavras',v:meta.totalWords.toLocaleString('pt-BR'),c:'var(--accent)'},
+    {l:'Segmentos',v:segs.length,c:'var(--accent)'},
+  ].map(s=>`<div class="stat"><div class="sl">${s.l}</div><div class="sv" style="color:${s.c}">${s.v}</div></div>`).join('');
+
+  const dims=[
+    {label:"E'",val:data.E_prime||0},{label:"S'",val:data.S_prime||0},
+    {label:"R'",val:data.R_prime||0},{label:"T'",val:data.T_prime||0},
+    {label:'z_t',val:data.intent_depth||0},{label:'φ',val:data.phi_field||0},
+    {label:'σ',val:data.sigma_field||0},{label:'ρ',val:meta.rhoVal||0},
+  ];
+  drawRadar2(dims,color);
+
+  const segScores=data.segment_scores||segs.map(()=>chci+Math.random()*.2-.1);
+  document.getElementById('seg-list2').innerHTML=segScores.slice(0,segs.length).map((s,i)=>{
+    const sv=Math.max(0,Math.min(1,s));
+    const sp=(sv*100).toFixed(1);
+    const c=sv>=.75?'#10b981':sv>=.5?'#f59e0b':sv>=.3?'#ef4444':'#64748b';
+    const vl=sv>=.75?'Humano':sv>=.5?'Híbrido':sv>=.3?'Fraco':'IA';
+    return `<div class="seg-item">
+      <div class="seg-num">Seg. ${i+1}</div>
+      <div class="seg-bar-wrap"><div class="seg-bar" style="width:${sp}%;background:${c}"></div></div>
+      <div class="seg-score" style="color:${c}">${sp}%</div>
+      <div class="seg-v" style="color:${c};background:${c}18;border:1px solid ${c}33">${vl}</div>
+    </div>`;
+  }).join('');
+
+  const dimDefs=[
+    {key:'E_prime',l:'Edit Intensity',v:"E'"},{key:'S_prime',l:'Div. Semântica',v:"S'"},
+    {key:'R_prime',l:'Taxa Rejeição',v:"R'"},{key:'T_prime',l:'Consist. Temporal',v:"T'"},
+    {key:'intent_depth',l:'Prof. Intenção',v:'z_t'},{key:'phi_field',l:'φ-field',v:'φ'},
+    {key:'sigma_field',l:'σ-field',v:'σ'},{key:'rho',l:'Responsab.',v:'ρ',ov:meta.rhoVal},
+  ];
+  document.getElementById('dim-grid2').innerHTML=dimDefs.map(d=>{
+    const val=d.ov!==undefined?d.ov:(data[d.key]||0);
+    const pv=(val*100).toFixed(0);
+    const c=val>=.7?'#10b981':val>=.4?'#f59e0b':'#ef4444';
+    return `<div class="dim"><div class="dl">${d.l}</div><div class="dv2">${d.v}</div><div class="db"><div class="dbf" style="width:${pv}%;background:${c}"></div></div><div class="dv" style="color:${c}">${pv}%</div></div>`;
+  }).join('');
+
+  let html='';
+  if(data.human_markers?.length) html+=`<div style="margin-bottom:8px"><strong style="color:var(--a3)">Marcadores Humanos:</strong><div class="mrow">${data.human_markers.map(m=>`<span class="mtag" style="background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.3)">${m}</span>`).join('')}</div></div>`;
+  if(data.ai_markers?.length) html+=`<div style="margin-bottom:8px"><strong style="color:var(--danger)">Marcadores IA:</strong><div class="mrow">${data.ai_markers.map(m=>`<span class="mtag" style="background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.3)">${m}</span>`).join('')}</div></div>`;
+  if(data.strengths?.length) html+=`<div style="margin-bottom:8px"><strong style="color:var(--warn)">Pontos fortes:</strong><ul style="padding-left:14px;margin-top:4px">${data.strengths.map(s=>`<li style="font-size:11px;margin-bottom:3px">${s}</li>`).join('')}</ul></div>`;
+  if(data.concerns?.length) html+=`<div style="margin-bottom:12px"><strong style="color:var(--muted)">Atenção:</strong><ul style="padding-left:14px;margin-top:4px">${data.concerns.map(s=>`<li style="font-size:11px;margin-bottom:3px;color:var(--muted)">${s}</li>`).join('')}</ul></div>`;
+  html+=`<div style="border-top:1px solid var(--border);padding-top:10px;font-size:12px;line-height:1.9">${(data.narrative||'').replace(/\n/g,'<br>')}</div>`;
+  document.getElementById('narr-text2').innerHTML=html;
+
+  const now=new Date().toISOString().split('T')[0];
+  document.getElementById('d-obra2').textContent=`${meta.title} · ${meta.author} · ${meta.type} · ISBN: ${meta.isbn}`;
+  document.getElementById('d-cir2').textContent=`CIR — Intenção: ${((data.intent_depth||0)*100).toFixed(0)}%. Responsabilidade (ρ): ${(meta.rhoVal*100).toFixed(0)}%. Data: ${now}.`;
+  document.getElementById('d-hail2').textContent=`HAIL — E': ${((data.E_prime||0)*100).toFixed(0)}% | S': ${((data.S_prime||0)*100).toFixed(0)}% | R': ${((data.R_prime||0)*100).toFixed(0)}% | T': ${((data.T_prime||0)*100).toFixed(0)}% | φ: ${((data.phi_field||0)*100).toFixed(0)}% | σ: ${((data.sigma_field||0)*100).toFixed(0)}%.`;
+  document.getElementById('d-chci2').textContent=`CHCI = ${pct}% — ${verdict.replace(/^[✓⚠✕] /,'')}. Soberania criativa ${chci>=.5?'CONFIRMADA':'NÃO CONFIRMADA'} sob AG-999 Formula 06_A. ${meta.totalWords.toLocaleString('pt-BR')} palavras · Engine: César Agliardi Pereira / AG-999 v11 · ELHC Framework.`;
+
+  lastResult={chci,pct,verdict,color,data,meta,segmentScores:segScores,now};
+}
+
+function displayResultsInline(chci, data, segs, meta) {
+  const el = document.getElementById('upload-results');
+  const pct = (chci * 100).toFixed(1);
+  let color, verdict, vbg;
+  if (chci >= .75) { color = '#10b981'; verdict = '✓ AUTORIA HUMANA VERIFICADA'; vbg = 'rgba(16,185,129,.12)'; }
+  else if (chci >= .5) { color = '#f59e0b'; verdict = '⚠ OBRA HÍBRIDA — CONTROLE PARCIAL'; vbg = 'rgba(245,158,11,.12)'; }
+  else if (chci >= .3) { color = '#ef4444'; verdict = '✕ CONTROLE HUMANO FRACO'; vbg = 'rgba(239,68,68,.12)'; }
+  else { color = '#64748b'; verdict = '✕ PREDOMINANTEMENTE IA'; vbg = 'rgba(100,116,139,.12)'; }
+
+  const now = new Date().toISOString().split('T')[0];
+  const segScores = data.segment_scores || segs.map(() => Math.min(1, Math.max(0, chci + Math.random() * .2 - .1)));
+
+  const dims = [
+    { label: "E'", val: data.E_prime || 0 }, { label: "S'", val: data.S_prime || 0 },
+    { label: "R'", val: data.R_prime || 0 }, { label: "T'", val: data.T_prime || 0 },
+    { label: 'z_t', val: data.intent_depth || 0 }, { label: 'φ', val: data.phi_field || 0 },
+    { label: 'σ', val: data.sigma_field || 0 }, { label: 'ρ', val: meta.rhoVal || 0 },
+  ];
+
+  // Build radar SVG inline
+  const n = dims.length, cx = 130, cy = 130, R = 95;
+  let radarSVG = `<svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" style="max-width:200px;flex-shrink:0">`;
+  [.25, .5, .75, 1].forEach(r => {
+    const pts = dims.map((_, i) => { const a = (i / n) * 2 * Math.PI - Math.PI / 2; return `${cx + R * r * Math.cos(a)},${cy + R * r * Math.sin(a)}`; }).join(' ');
+    radarSVG += `<polygon points="${pts}" fill="none" stroke="rgba(0,229,255,.06)" stroke-width="1"/>`;
+  });
+  dims.forEach((d, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    radarSVG += `<line x1="${cx}" y1="${cy}" x2="${cx + R * Math.cos(a)}" y2="${cy + R * Math.sin(a)}" stroke="rgba(0,229,255,.08)" stroke-width="1"/>`;
+    radarSVG += `<text x="${cx + (R + 16) * Math.cos(a)}" y="${cy + (R + 16) * Math.sin(a)}" text-anchor="middle" dominant-baseline="middle" fill="#64748b" font-size="10" font-family="Space Mono,monospace">${d.label}</text>`;
+  });
+  const pts = dims.map((d, i) => { const a = (i / n) * 2 * Math.PI - Math.PI / 2; return `${cx + R * d.val * Math.cos(a)},${cy + R * d.val * Math.sin(a)}`; }).join(' ');
+  radarSVG += `<polygon points="${pts}" fill="${color}22" stroke="${color}" stroke-width="2"/>`;
+  dims.forEach((d, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    radarSVG += `<circle cx="${cx + R * d.val * Math.cos(a)}" cy="${cy + R * d.val * Math.sin(a)}" r="4" fill="${color}"/>`;
+  });
+  radarSVG += `</svg>`;
+
+  const radarLeg = dims.map(d => {
+    const v = (d.val * 100).toFixed(0);
+    const c = d.val >= .7 ? '#10b981' : d.val >= .4 ? '#f59e0b' : '#ef4444';
+    return `<div class="rleg-item"><div class="rleg-dot" style="background:${c}"></div><div class="rleg-lbl">${d.label}</div><div class="rleg-val" style="color:${c}">${v}%</div></div>`;
+  }).join('');
+
+  const dimDefs = [
+    { key: 'E_prime', l: 'Edit Intensity', v: "E'" }, { key: 'S_prime', l: 'Div. Semântica', v: "S'" },
+    { key: 'R_prime', l: 'Taxa Rejeição', v: "R'" }, { key: 'T_prime', l: 'Consist. Temporal', v: "T'" },
+    { key: 'intent_depth', l: 'Prof. Intenção', v: 'z_t' }, { key: 'phi_field', l: 'φ-field', v: 'φ' },
+    { key: 'sigma_field', l: 'σ-field', v: 'σ' }, { key: 'rho', l: 'Responsab.', v: 'ρ', ov: meta.rhoVal },
+  ];
+
+  let markersHTML = '';
+  if (data.human_markers?.length) markersHTML += `<div style="margin-bottom:8px"><strong style="color:var(--a3)">Marcadores Humanos:</strong><div class="mrow">${data.human_markers.map(m => `<span class="mtag" style="background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.3)">${m}</span>`).join('')}</div></div>`;
+  if (data.ai_markers?.length) markersHTML += `<div style="margin-bottom:8px"><strong style="color:var(--danger)">Marcadores IA:</strong><div class="mrow">${data.ai_markers.map(m => `<span class="mtag" style="background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.3)">${m}</span>`).join('')}</div></div>`;
+  if (data.strengths?.length) markersHTML += `<div style="margin-bottom:8px"><strong style="color:var(--warn)">Pontos fortes:</strong><ul style="padding-left:14px;margin-top:4px">${data.strengths.map(s => `<li style="font-size:11px;margin-bottom:3px">${s}</li>`).join('')}</ul></div>`;
+  if (data.concerns?.length) markersHTML += `<div style="margin-bottom:12px"><strong style="color:var(--muted)">Atenção:</strong><ul style="padding-left:14px;margin-top:4px">${data.concerns.map(s => `<li style="font-size:11px;margin-bottom:3px;color:var(--muted)">${s}</li>`).join('')}</ul></div>`;
+  markersHTML += `<div style="border-top:1px solid var(--border);padding-top:10px;font-size:12px;line-height:1.9">${(data.narrative || '').replace(/\n/g, '<br>')}</div>`;
+
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="score-hero">
+      <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px">◈ CHCI — Creative Human Control Index</div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <svg viewBox="0 0 240 138" style="width:220px;height:126px">
+          <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="#1e293b" stroke-width="16" stroke-linecap="round"/>
+          <path id="il-gauge-fill" d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="${color}" stroke-width="16" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"/>
+          <circle cx="120" cy="120" r="6" fill="${color}"/>
+          <line id="il-gauge-needle" x1="120" y1="120" x2="120" y2="28" stroke="${color}" stroke-width="2" stroke-linecap="round" transform="rotate(-90 120 120)"/>
+        </svg>
+        <div id="il-big-score" class="big-score" style="color:${color}">0.00</div>
+        <div class="chci-label">Creative Human Control Index</div>
+        <div class="verdict-badge" style="color:${color};background:${vbg};border:1px solid ${color}33">${verdict}</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      ${[
+        { l: 'CHCI Score', v: pct + '%', c: color },
+        { l: 'Confiança Humana', v: ((data.human_confidence || 0) * 100).toFixed(0) + '%', c: (data.human_confidence || 0) >= .6 ? '#10b981' : '#f59e0b' },
+        { l: 'Prob. Híbrida', v: ((data.hybrid_probability || 0) * 100).toFixed(0) + '%', c: '#f59e0b' },
+        { l: 'Veredicto', v: data.verdict || '—', c: color },
+        { l: 'Palavras', v: meta.totalWords.toLocaleString('pt-BR'), c: 'var(--accent)' },
+        { l: 'Segmentos', v: segs.length, c: 'var(--accent)' },
+      ].map(s => `<div class="stat"><div class="sl">${s.l}</div><div class="sv" style="color:${s.c}">${s.v}</div></div>`).join('')}
+    </div>
+
+    <div class="radar-section">${radarSVG}<div class="rleg">${radarLeg}</div></div>
+
+    <div class="card">
+      <div class="sec">Análise por Segmento</div>
+      ${segScores.slice(0, segs.length).map((s, i) => {
+        const sv = Math.max(0, Math.min(1, s));
+        const sp = (sv * 100).toFixed(1);
+        const c = sv >= .75 ? '#10b981' : sv >= .5 ? '#f59e0b' : sv >= .3 ? '#ef4444' : '#64748b';
+        const vl = sv >= .75 ? 'Humano' : sv >= .5 ? 'Híbrido' : sv >= .3 ? 'Fraco' : 'IA';
+        return `<div class="seg-item"><div class="seg-num">Seg. ${i + 1}</div><div class="seg-bar-wrap"><div class="seg-bar" style="width:${sp}%;background:${c}"></div></div><div class="seg-score" style="color:${c}">${sp}%</div><div class="seg-v" style="color:${c};background:${c}18;border:1px solid ${c}33">${vl}</div></div>`;
+      }).join('')}
+    </div>
+
+    <div class="dim-grid">
+      ${dimDefs.map(d => {
+        const val = d.ov !== undefined ? d.ov : (data[d.key] || 0);
+        const pv = (val * 100).toFixed(0);
+        const c = val >= .7 ? '#10b981' : val >= .4 ? '#f59e0b' : '#ef4444';
+        return `<div class="dim"><div class="dl">${d.l}</div><div class="dv2">${d.v}</div><div class="db"><div class="dbf" style="width:${pv}%;background:${c}"></div></div><div class="dv" style="color:${c}">${pv}%</div></div>`;
+      }).join('')}
+    </div>
+
+    <div class="narr"><h3>◈ Análise Qualitativa da IA</h3><div class="narr-text">${markersHTML}</div></div>
+
+    <div class="decl-card">
+      <h3>◈ Declaração ELHC — Auto-Gerada</h3>
+      <div class="decl-row"><div class="decl-key">OBRA</div><div class="decl-text">${meta.title} · ${meta.author} · ${meta.type} · ISBN: ${meta.isbn}</div></div>
+      <div class="decl-row"><div class="decl-key">CIR</div><div class="decl-text">Intenção: ${((data.intent_depth || 0) * 100).toFixed(0)}%. Responsabilidade (ρ): ${(meta.rhoVal * 100).toFixed(0)}%. Data: ${now}.</div></div>
+      <div class="decl-row"><div class="decl-key">HAIL</div><div class="decl-text">E': ${((data.E_prime || 0) * 100).toFixed(0)}% | S': ${((data.S_prime || 0) * 100).toFixed(0)}% | R': ${((data.R_prime || 0) * 100).toFixed(0)}% | T': ${((data.T_prime || 0) * 100).toFixed(0)}% | φ: ${((data.phi_field || 0) * 100).toFixed(0)}% | σ: ${((data.sigma_field || 0) * 100).toFixed(0)}%.</div></div>
+      <div class="decl-row"><div class="decl-key">CHCI</div><div class="decl-text">CHCI = ${pct}% — ${verdict.replace(/^[✓⚠✕] /, '')}. Soberania criativa ${chci >= .5 ? 'CONFIRMADA' : 'NÃO CONFIRMADA'} sob AG-999 Formula 06_A. ${meta.totalWords.toLocaleString('pt-BR')} palavras · Engine: César Agliardi Pereira / AG-999 v11 · ELHC Framework.</div></div>
+    </div>
+
+    <div class="exp-row">
+      <button class="exp-btn g" onclick="exportTXT()">↓ Declaração ELHC (.txt)</button>
+      <button class="exp-btn g" onclick="exportJSON()">↓ Dados Completos (.json)</button>
+      <button class="exp-btn b" onclick="saveHistory()">⊙ Salvar no Histórico</button>
+    </div>`;
+
+  // Animate gauge and score number
+  const fill = document.getElementById('il-gauge-fill');
+  const needle = document.getElementById('il-gauge-needle');
+  const scoreEl = document.getElementById('il-big-score');
+  const pl = 314;
+  let p = 0;
+  const iv = setInterval(() => {
+    p = Math.min(p + chci / 40, chci);
+    fill.setAttribute('stroke-dashoffset', pl - (p * pl));
+    needle.setAttribute('transform', `rotate(${-90 + p * 180} 120 120)`);
+    scoreEl.textContent = p.toFixed(2);
+    if (p >= chci) clearInterval(iv);
+  }, 20);
+
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  lastResult = { chci, pct, verdict, color, data, meta, segmentScores: segScores, now };
+}
+
+function drawRadar2(dims,color){
+  const svg=document.getElementById('radar-svg2');
+  const leg=document.getElementById('rleg2');
+  const n=dims.length,cx=130,cy=130,R=95;
+  svg.innerHTML='';
+  [.25,.5,.75,1].forEach(r=>{
+    const pts=dims.map((_,i)=>{const a=(i/n)*2*Math.PI-Math.PI/2;return `${cx+R*r*Math.cos(a)},${cy+R*r*Math.sin(a)}`;}).join(' ');
+    const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    p.setAttribute('points',pts);p.setAttribute('fill','none');p.setAttribute('stroke','rgba(0,229,255,.06)');p.setAttribute('stroke-width','1');svg.appendChild(p);
+  });
+  dims.forEach((d,i)=>{
+    const a=(i/n)*2*Math.PI-Math.PI/2;
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',cx);l.setAttribute('y1',cy);l.setAttribute('x2',cx+R*Math.cos(a));l.setAttribute('y2',cy+R*Math.sin(a));l.setAttribute('stroke','rgba(0,229,255,.08)');l.setAttribute('stroke-width','1');svg.appendChild(l);
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',cx+(R+16)*Math.cos(a));t.setAttribute('y',cy+(R+16)*Math.sin(a));
+    t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('fill','#64748b');t.setAttribute('font-size','10');t.setAttribute('font-family','Space Mono,monospace');
+    t.textContent=d.label;svg.appendChild(t);
+  });
+  const pts=dims.map((d,i)=>{const a=(i/n)*2*Math.PI-Math.PI/2;return `${cx+R*d.val*Math.cos(a)},${cy+R*d.val*Math.sin(a)}`;}).join(' ');
+  const fp=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  fp.setAttribute('points',pts);fp.setAttribute('fill',color+'22');fp.setAttribute('stroke',color);fp.setAttribute('stroke-width','2');svg.appendChild(fp);
+  dims.forEach((d,i)=>{
+    const a=(i/n)*2*Math.PI-Math.PI/2;
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx+R*d.val*Math.cos(a));c.setAttribute('cy',cy+R*d.val*Math.sin(a));c.setAttribute('r','4');c.setAttribute('fill',color);svg.appendChild(c);
+  });
+  const names=['Edit Intensity','Div. Semântica','Taxa Rejeição','Consist. Temporal','Intenção','φ-field','σ-field','Responsab.'];
+  leg.innerHTML=dims.map((d,i)=>{
+    const v=(d.val*100).toFixed(0);
+    const c=d.val>=.7?'#10b981':d.val>=.4?'#f59e0b':'#ef4444';
+    return `<div class="rleg-item"><div class="rleg-dot" style="background:${c}"></div><div class="rleg-lbl">${names[i]||d.label}</div><div class="rleg-val" style="color:${c}">${v}%</div></div>`;
+  }).join('');
+}
+
+function animNum(el,target){
+  let s=0;const step=target/40;
+  const iv=setInterval(()=>{s=Math.min(s+step,target);el.textContent=s.toFixed(2);if(s>=target)clearInterval(iv);},20);
+}
+function animGauge2(chci,color){
+  const pl=314,fill=document.getElementById('gauge-fill2'),needle=document.getElementById('gauge-needle2');
+  fill.style.stroke=color;let p=0;
+  const iv=setInterval(()=>{p=Math.min(p+chci/40,chci);fill.setAttribute('stroke-dashoffset',pl-(p*pl));needle.setAttribute('transform',`rotate(${-90+p*180} 120 120)`);if(p>=chci)clearInterval(iv);},20);
+}
+
+function computeManual(){
+  const E=document.getElementById('E').value/100,S=document.getElementById('S').value/100,
+        R=document.getElementById('R').value/100,T=document.getElementById('T').value/100,
+        Z=document.getElementById('Z').value/100,rho=document.getElementById('RHO').value/100,
+        phi=document.getElementById('PHI').value/100,sig=document.getElementById('SIGMA').value/100;
+  const chci=computeCHCI(E,S,R,T,Z,rho,phi,sig);
+  const pct=(chci*100).toFixed(1);
+  let color,verdict,vbg;
+  if(chci>=.75){color='#10b981';verdict='✓ AUTORIA HUMANA VERIFICADA';vbg='rgba(16,185,129,.12)';}
+  else if(chci>=.5){color='#f59e0b';verdict='⚠ HÍBRIDO — CONTROLE PARCIAL';vbg='rgba(245,158,11,.12)';}
+  else if(chci>=.3){color='#ef4444';verdict='✕ CONTROLE HUMANO FRACO';vbg='rgba(239,68,68,.12)';}
+  else{color='#64748b';verdict='✕ PREDOMINANTEMENTE IA';vbg='rgba(100,116,139,.12)';}
+  const now=new Date().toISOString().split('T')[0];
+  document.getElementById('manual-result').innerHTML=`
+    <div class="card">
+      <div style="text-align:center;margin-bottom:14px">
+        <div style="font-size:48px;font-weight:800;font-family:'Space Mono',monospace;color:${color}">${pct}%</div>
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:4px 0">Creative Human Control Index</div>
+        <div style="display:inline-block;padding:7px 16px;border-radius:8px;background:${vbg};color:${color};font-weight:700;font-size:13px;border:1px solid ${color}33">${verdict}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px">
+        ${[['E\'',E],["S'",S],["R'",R],["T'",T],['z_t',Z],['ρ',rho],['φ',phi],['σ',sig]].map(([v,val])=>{
+          const c=val>=.7?'#10b981':val>=.4?'#f59e0b':'#ef4444';
+          return `<div style="background:var(--bg3);border-radius:8px;padding:9px"><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px">${v}</div><div style="height:3px;background:var(--bg2);border-radius:2px;margin-bottom:4px;overflow:hidden"><div style="height:100%;width:${(val*100).toFixed(0)}%;background:${c}"></div></div><div style="font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:${c}">${(val*100).toFixed(0)}%</div></div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:10px;padding:9px;background:var(--bg3);border-radius:8px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">
+        Data: ${now} · AG-999 Formula 06_A · ELHC Framework
+      </div>
+    </div>`;
+  lastResult={chci,pct,verdict,data:{E_prime:E,S_prime:S,R_prime:R,T_prime:T,intent_depth:Z,phi_field:phi,sigma_field:sig},meta:{title:'(Manual)',author:'—',type:'—',isbn:'—',rhoVal:rho,totalWords:0},now};
+}
+
+function exportTXT(){
+  const r=lastResult;if(!r){alert('Carregue um resultado primeiro.');return;}
+  const m=r.meta||{};
+  const txt=`ELHC DECLARATION — CREATIVE HUMAN CONTROL INDEX\n${'='.repeat(48)}\nEngine: AG-999 Formula 06_A · César Agliardi Pereira\nFramework: ELHC · ISBN 9798241542984 · Lei 9.610/98\nData: ${r.now}\n\nOBRA: ${m.title||'—'}\nAUTOR: ${m.author||'—'}\nTIPO: ${m.type||'—'}\nISBN: ${m.isbn||'—'}\nPalavras: ${(m.totalWords||0).toLocaleString('pt-BR')}\n\nCHCI SCORE: ${r.pct}%\nVEREDITO: ${(r.verdict||'').replace(/^[✓⚠✕] /,'')}\n\n--- DIMENSÕES ---\nE': ${((r.data?.E_prime||0)*100).toFixed(0)}%\nS': ${((r.data?.S_prime||0)*100).toFixed(0)}%\nR': ${((r.data?.R_prime||0)*100).toFixed(0)}%\nT': ${((r.data?.T_prime||0)*100).toFixed(0)}%\nz_t: ${((r.data?.intent_depth||0)*100).toFixed(0)}%\nρ: ${((m.rhoVal||0)*100).toFixed(0)}%\nφ: ${((r.data?.phi_field||0)*100).toFixed(0)}%\nσ: ${((r.data?.sigma_field||0)*100).toFixed(0)}%\n\nStatus: Soberania criativa ${r.chci>=.5?'CONFIRMADA':'NÃO CONFIRMADA'}\n© César Agliardi Pereira · Todos os direitos reservados`;
+  dl(txt,'text/plain',`CHCI_${(m.title||'obra').replace(/\s+/g,'_')}_${r.now}.txt`);
+}
+function exportJSON(){
+  const r=lastResult;if(!r){alert('Carregue um resultado primeiro.');return;}
+  dl(JSON.stringify(r,null,2),'application/json',`CHCI_${(r.meta?.title||'obra').replace(/\s+/g,'_')}_${r.now}.json`);
+}
+function dl(content,type,name){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name;a.click();
+}
+
+function saveHistory(){
+  if(!lastResult){alert('Carregue um resultado primeiro.');return;}
+  histData.unshift({...lastResult,id:Date.now()});
+  if(histData.length>20) histData.pop();
+  try{localStorage.setItem('chci_v3',JSON.stringify(histData));}catch(e){}
+  alert('✓ Avaliação salva no histórico!');
+}
+function renderHistory(){
+  const el=document.getElementById('hist-list');
+  if(!histData.length){el.innerHTML='<div class="no-hist">Nenhuma avaliação ainda.</div>';return;}
+  el.innerHTML=histData.map(h=>{
+    const c=h.chci>=.75?'#10b981':h.chci>=.5?'#f59e0b':h.chci>=.3?'#ef4444':'#64748b';
+    return `<div class="hist-item"><div class="hist-score" style="color:${c}">${h.pct}%</div><div class="hist-info"><div class="hist-title">${h.meta?.title||'(Sem título)'}</div><div class="hist-meta">${h.meta?.author||'—'} · ${h.now}</div></div><div class="hist-v" style="color:${c};background:${c}18;border:1px solid ${c}33">${(h.verdict||'').replace(/^[✓⚠✕] /,'').split(' ').slice(0,2).join(' ')||'—'}</div></div>`;
+  }).join('');
+}
+</script>
